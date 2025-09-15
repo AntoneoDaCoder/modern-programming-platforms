@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Список задач</title>
+</head>
+<body>
+  <h1>Задачи</h1>
+
+  <form action="/add" method="POST" enctype="multipart/form-data">
+    <input type="text" name="title" placeholder="Название задачи" required>
+    <input type="date" name="date" required>
+    <input type="file" name="file">
+    <button type="submit">Добавить</button>
+  </form>
+
+  <hr>
+
+  <form method="GET" action="/">
+    <select name="status" onchange="this.form.submit()">
+      <option value="all" <%= filter==="all" ? "selected" : "" %>>Все</option>
+      <option value="pending" <%= filter==="pending" ? "selected" : "" %>>Ожидают</option>
+      <option value="done" <%= filter==="done" ? "selected" : "" %>>Выполненные</option>
+    </select>
+  </form>
+
+  <ul>
+    <% tasks.forEach(task => { %>
+      <li>
+        <b><%= task.title %></b> — <%= task.status %> до <%= task.date %>
+        <% if (task.file) { %>
+          (файл: <%= task.file %>)
+        <% } %>
+        <% if (task.status === "pending") { %>
+          <form action="/done/<%= task.id %>" method="POST" style="display:inline;">
+            <button type="submit">Отметить выполненной</button>
+          </form>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+</body>
+</html>
