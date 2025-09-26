@@ -1,0 +1,27 @@
+<h1>Задачи</h1>
+
+<form #taskForm="ngForm" (ngSubmit)="onAddTask(taskForm, file)">
+  <input type="text" name="title" ngModel placeholder="Название задачи" required>
+  <input type="date" name="date" ngModel required>
+  <input type="file" #file>
+  <button type="submit">Добавить</button>
+</form>
+
+<hr>
+
+<select [(ngModel)]="filter" (change)="onFilterChange()" name="filter">
+  <option value="all">Все</option>
+  <option value="pending">Ожидают</option>
+  <option value="done">Выполненные</option>
+</select>
+
+<ul>
+  <li *ngFor="let task of tasks">
+    <b>{{ task.title }}</b> — {{ task.status }} до {{ task.date }}
+    <span *ngIf="task.file">
+      (файл: <a [href]="'http://localhost:3000/uploads/' + task.file" target="_blank">{{ task.file }}</a>)
+    </span>
+    <button *ngIf="task.status === 'pending'" (click)="markDone(task.id)">Выполнить</button>
+    <button (click)="deleteTask(task.id)">Удалить</button>
+  </li>
+</ul>
