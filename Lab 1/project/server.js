@@ -3,10 +3,23 @@ const multer = require("multer");
 const path = require("path");
 
 const app = express();
-const upload = multer({ dest: "uploads/" });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "uploads"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  }
+});
+
+const upload = multer({ storage });
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 let tasks = [];
 
@@ -37,4 +50,6 @@ app.post("/done/:id", (req, res) => {
   res.redirect("/");
 });
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+app.listen(3000, () =>
+  console.log("Server running on http://localhost:3000")
+);
