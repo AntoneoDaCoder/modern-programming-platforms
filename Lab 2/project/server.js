@@ -4,13 +4,13 @@ const path = require("path");
 const cors = require("cors");
 
 const app = express();
-app.use(cors()); // чтобы Angular мог обращаться
+app.use(cors()); 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 let tasks = [];
 
-// Конфиг для файлов
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "uploads"));
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-/** Получить список задач */
+
 app.get("/api/tasks", (req, res) => {
   const filter = req.query.status || "all";
   let filtered = tasks;
@@ -32,7 +32,7 @@ app.get("/api/tasks", (req, res) => {
   res.status(200).json(filtered);
 });
 
-/** Добавить задачу */
+
 app.post("/api/tasks", upload.single("file"), (req, res) => {
   const { title, date } = req.body;
   const newTask = {
@@ -46,7 +46,7 @@ app.post("/api/tasks", upload.single("file"), (req, res) => {
   res.status(201).json(newTask);
 });
 
-/** Отметить задачу выполненной */
+
 app.put("/api/tasks/:id/done", (req, res) => {
   const id = parseInt(req.params.id);
   let task = tasks.find(t => t.id === id);
@@ -56,7 +56,7 @@ app.put("/api/tasks/:id/done", (req, res) => {
   res.status(200).json(task);
 });
 
-/** Удалить задачу */
+
 app.delete("/api/tasks/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const initialLength = tasks.length;

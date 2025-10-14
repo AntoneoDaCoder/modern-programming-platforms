@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const app = express();
 
 const JWT_SECRET = "replace_this_with_a_real_secret";
-const JWT_EXPIRES_IN = "1h"; // или '3600s'
+const JWT_EXPIRES_IN = "1h"; 
 
 app.use(cors({
   origin: "http://localhost:4200",
