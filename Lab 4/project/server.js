@@ -5,6 +5,7 @@ const fs = require('fs');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const { Server } = require('socket.io');
+const bcrypt = require("bcrypt");
 
 const APP_PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'replace_this_with_a_real_secret';
@@ -110,10 +111,11 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
   console.log('Client connected', socket.id, 'user=', socket.user && socket.user.username);
 
-  socket.on('login', (payload, cb) => {
+  socket.on('login', async (payload, cb) => {
     const { username, password } = payload || {};
     const user = users.find(u => u.username === username);
-    if (!user) return cb && cb({ error: 'Invalid credentials' });
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!user || !ok) return cb && cb({ error: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
     socket.user = { id: user.id, username: user.username };

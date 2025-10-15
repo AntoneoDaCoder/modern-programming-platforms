@@ -1,0 +1,42 @@
+<div *ngIf="isAuth === null" style="text-align:center;margin-top:40px;">
+  Проверяем сессию...
+</div>
+
+<ng-container *ngIf="isAuth === false">
+  <app-login></app-login>
+</ng-container>
+
+<ng-container *ngIf="isAuth === true">
+  <div style="max-width:900px;margin:20px auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2>Задачи</h2>
+      <button (click)="logout()">Выйти</button>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label>Фильтр:
+        <select [(ngModel)]="filter" (change)="onFilterChange()">
+          <option value="all">all</option>
+          <option value="pending">pending</option>
+          <option value="done">done</option>
+        </select>
+      </label>
+    </div>
+
+    <ul>
+      <li *ngFor="let t of tasks">
+        <strong>{{t.title}}</strong> — {{t.date}} — {{t.status}}
+        <button (click)="markDone(t.id)">done</button>
+        <button (click)="deleteTask(t.id)">delete</button>
+      </li>
+    </ul>
+
+    <h4>Добавить задачу</h4>
+    <form #taskForm="ngForm" (ngSubmit)="onAddTask(taskForm, file)">
+      <input type="text" name="title" ngModel placeholder="Название задачи" required>
+      <input type="date" name="date" ngModel required>
+      <input type="file" #file>
+      <button type="submit">Добавить</button>
+    </form>
+  </div>
+</ng-container>
